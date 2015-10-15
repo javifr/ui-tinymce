@@ -12,7 +12,11 @@ angular.module('ui.tinymce', [])
       link: function (scope, elm, attrs, ngModel) {
         var expression, options, tinyInstance,
           updateView = function () {
-            ngModel.$setViewValue(elm.val());
+            if(elm.prop("tagName").toLowerCase() === 'textarea') {
+                ngModel.$setViewValue(elm.val());
+            } else {
+                ngModel.$setViewValue(elm.html());
+            }
             if (!scope.$root.$$phase) {
               scope.$apply();
             }
@@ -68,10 +72,62 @@ angular.module('ui.tinymce', [])
               ed.save();
               updateView();
             });
+            //clicking on the text
+            ed.on("click", function(e){
+              //bind click icons to update
+              $(".mce-widget").on('click', function(e){
+                ed.save();
+                updateView();
+                setTimeout(function(){
+                  $(".mce-grid-cell").on('click', function(e){
+                    setTimeout(function(){
+                      ed.save();
+                      updateView();
+                    }, 10);
+                  });
+                },50);
+              });
+            });
+            ed.addButton('var', {
+                type: 'menubutton',
+                text: 'Variables',
+                icon: false,
+                menu: [
+                    {text: 'Nombre', onclick: function() {ed.insertContent('{name}');}},
+                    {text: 'Apellido 1', onclick: function() {ed.insertContent('{surname_1}');}},
+                    {text: 'Apellido 2', onclick: function() {ed.insertContent('{surname_2}');}},
+                    {text: 'Cupón', onclick: function() {ed.insertContent('{coupon}');}},
+                    {text: 'Puntos disponibles', onclick: function() {ed.insertContent('{score_available}');}}
+                ]
+            });
+            ed.addButton('clear', {
+                text: 'Borrar todo',
+                icon: false,
+                onclick : function() {
+                  ed.setContent('');
+                }
+            });
             if (configSetup) {
               configSetup(ed);
             }
           },
+          style_formats: [
+              {title: "Tamaño", items: [
+                  {title: "Normal", format: "p"},
+                  {title: "Título 1", format: "h1"},
+                  {title: "Título 2", format: "h2"},
+                  {title: "Título 3", format: "h3"}
+              ]},
+              {title: "En línea", items: [
+                  {title: "Negrita", icon: "bold", format: "bold"},
+                  {title: "Cursiva", icon: "italic", format: "italic"},
+                  {title: "Subrayado", icon: "underline", format: "underline"},
+                  {title: "Tachado", icon: "strikethrough", format: "strikethrough"},
+                  {title: "Superíndice", icon: "superscript", format: "superscript"},
+                  {title: "Subíndice", icon: "subscript", format: "subscript"}
+              ]}
+          ],
+          theme_advanced_fonts : "Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;AkrutiKndPadmini=Akpdmi-n",
           mode: 'exact',
           elements: attrs.id
         };
@@ -97,6 +153,7 @@ angular.module('ui.tinymce', [])
             tinyInstance = null;
           }
         });
+
       }
     };
   }]);
