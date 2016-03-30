@@ -99,7 +99,11 @@ angular.module('ui.tinymce', [])
                     {text: 'Cupón', onclick: function() {ed.insertContent('{coupon}');}},
                     {text: 'Cupón con Compañía', onclick: function() {ed.insertContent('{couponCompany}');}},
                     {text: 'Puntos', onclick: function() {ed.insertContent('{score}');}},
-                    {text: 'Local de registro', onclick: function() {ed.insertContent('{shop}');}}
+                    {text: 'Local de registro', onclick: function() {ed.insertContent('{shop}');}},
+                    {text: 'Dirección', onclick: function() {ed.insertContent('{address}');}},
+                    {text: 'Ciudad', onclick: function() {ed.insertContent('{city}');}},
+                    {text: 'Código postal', onclick: function() {ed.insertContent('{postal_code}');}},
+                    {text: 'País', onclick: function() {ed.insertContent('{country}');}}
                 ]
             });
             ed.addButton('clear', {
